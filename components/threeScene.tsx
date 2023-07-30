@@ -3,7 +3,7 @@
 import { useRef, useEffect } from 'react';
 import * as THREE from 'three';
 
-export default function ThreeScene() {
+export default function ThreeScene({x}: {x: number}) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
     useEffect(() => {
@@ -15,7 +15,7 @@ export default function ThreeScene() {
 
         // Set up the Three.js scene
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 2000);
+        const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight*x, 0.1, 2000);
         const renderer = new THREE.WebGLRenderer({ canvas: canvasRef.current, alpha: true });
 
         renderer.setSize(300, 200);
@@ -79,7 +79,7 @@ export default function ThreeScene() {
             renderer.dispose();
             scene.remove(base);
         };
-    }, []);
+    }, [x]);
 
     return <canvas ref={canvasRef} />;
 };
