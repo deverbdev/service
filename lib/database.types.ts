@@ -12,7 +12,9 @@ export interface Database {
       profiles: {
         Row: {
           avatar_url: string | null
+          banner_url: string | null
           created_at: string | null
+          description: string | null
           full_name: string | null
           id: string
           updated_at: string | null
@@ -21,7 +23,9 @@ export interface Database {
         }
         Insert: {
           avatar_url?: string | null
+          banner_url?: string | null
           created_at?: string | null
+          description?: string | null
           full_name?: string | null
           id: string
           updated_at?: string | null
@@ -30,7 +34,9 @@ export interface Database {
         }
         Update: {
           avatar_url?: string | null
+          banner_url?: string | null
           created_at?: string | null
+          description?: string | null
           full_name?: string | null
           id?: string
           updated_at?: string | null
@@ -62,7 +68,19 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      delete_avatar: {
+        Args: {
+          avatar_url: string
+        }
+        Returns: Record<string, unknown>
+      }
+      delete_storage_object: {
+        Args: {
+          bucket: string
+          object: string
+        }
+        Returns: Record<string, unknown>
+      }
     }
     Enums: {
       [_ in never]: never

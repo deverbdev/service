@@ -1,8 +1,8 @@
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 import { Database } from '@/lib/database.types'
-import ProfileForm from './profile-form'
-import Navbar from '@/components/navbar'
+import ProfileForm from './ProfileForm'
+import Navbar from '@/components/Navbar'
 
 export default async function Profile({params}: {params: {user: string}}) {
     const supabase = createServerComponentClient<Database>({ cookies })

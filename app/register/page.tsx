@@ -6,6 +6,7 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import HCaptcha from "@hcaptcha/react-hcaptcha"
 import Link from "next/link"
 import { useTheme } from "next-themes"
+import Avatar from "@/components/avatar"
 
 const Register = () => {
     const supabase = createClientComponentClient()
@@ -20,6 +21,15 @@ const Register = () => {
     const [email, setEmail] = useState<string>('')
     const [password, setPassword] = useState<string>('')
     const [passwordConfirm, setPasswordConfirm] = useState<string>('')
+    
+    // bool to check whether first form has been completed
+    const [firstForm, setFirstForm] = useState<boolean>(false)
+    const [user, setUser] = useState<any>(null)
+
+    const [fullname, setFullname] = useState<string>('')
+    const [username, setUsername] = useState<string>('')
+    const [description, setDescription] = useState<string>('')
+    const [avatarUrl, setAvatarUrl] = useState<string>('')
 
     const [captchaToken, setCaptchaToken] = useState<string>('')
     const { theme } = useTheme()
@@ -33,7 +43,7 @@ const Register = () => {
                 throw new Error('Passwords do not match.')
             }
 
-            const { error } = await supabase.auth.signUp({
+            const { data, error } = await supabase.auth.signUp({
                 email, 
                 password,
                 options: {
@@ -41,8 +51,11 @@ const Register = () => {
                     captchaToken,
                 }
             })
+
             if (error) throw error
             setMessage(['Check your email for the confirmation link.'])
+            setFirstForm(true)
+            setUser(data.user)
         } catch (error: any) {
             setMessage([error.error_description || error.message, 0])
         } finally {
@@ -67,10 +80,12 @@ const Register = () => {
                     )}
 
                     {/* register form */}
+
+                    {/* boolean to check whether first form has been completed */}
                     <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
                         <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
                             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-                                Create and account
+                                Create Account
                             </h1>
                             <form className="space-y-4 md:space-y-6" onSubmit={handleRegister}>
                                 <div>
@@ -149,7 +164,7 @@ const Register = () => {
                                 </p>
                             </form>
                         </div>
-                    </div>
+                    </div> 
                 </div>
             </section>
         </>

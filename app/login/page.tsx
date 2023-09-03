@@ -28,7 +28,7 @@ const Login = () => {
             e.preventDefault()
             setLoading(true)
 
-            const { error } = await supabase.auth.signInWithPassword({
+            const { data, error } = await supabase.auth.signInWithPassword({
                 email,
                 password,
                 options: {
@@ -36,9 +36,11 @@ const Login = () => {
                 }
             })
 
+            console.log(data)
+
 
             if (error) throw error
-            router.push('/settings/profile')
+            router.push(`/`)
             
         } catch (error: any) {
             setMessage([error.error_description || error.message, 0])

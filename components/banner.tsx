@@ -3,11 +3,11 @@ import React, { useEffect, useState } from 'react'
 import { Database } from '@/lib/database.types'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import Image from 'next/image'
-import { UserCircleIcon } from '@heroicons/react/24/solid'
+import {  PhotoIcon } from '@heroicons/react/24/solid'
 
 type Profiles = Database['public']['Tables']['profiles']['Row']
 
-export default function Avatar({
+export default function Banner({
     uid,
     url,
     size,
@@ -16,26 +16,26 @@ export default function Avatar({
     className,
 }: {
     uid: string
-    url: Profiles['avatar_url']
+    url: Profiles['banner_url']
     size: number
     onUpload: (url: string) => void
     upload?: boolean
     className?: string
 }) {
     const supabase = createClientComponentClient<Database>()
-    const [avatarUrl, setAvatarUrl] = useState<Profiles['avatar_url']>(url)
+    const [bannerUrl, setBannerUrl] = useState<Profiles['banner_url']>(url)
     const [uploading, setUploading] = useState(false)
 
     useEffect(() => {
         async function downloadImage(path: string) {
             try {
-                const { data, error } = await supabase.storage.from('avatars').download(path)
+                const { data, error } = await supabase.storage.from('banners').download(path)
                 if (error) {
                     throw error
                 }
 
                 const url = URL.createObjectURL(data)
-                setAvatarUrl(url)
+                setBannerUrl(url)
             } catch (error) {
                 console.log('Error downloading image: ', error)
             }
@@ -44,7 +44,7 @@ export default function Avatar({
         if (url) downloadImage(url)
     }, [url, supabase])
 
-    const uploadAvatar: React.ChangeEventHandler<HTMLInputElement> = async (event) => {
+    const uploadBanner: React.ChangeEventHandler<HTMLInputElement> = async (event) => {
         try {
             setUploading(true)
 
@@ -56,7 +56,7 @@ export default function Avatar({
             const fileExt = file.name.split('.').pop()
             const filePath = `${uid}-${Math.random()}.${fileExt}`
 
-            let { error: uploadError } = await supabase.storage.from('avatars').upload(filePath, file)
+            let { error: uploadError } = await supabase.storage.from('banners').upload(filePath, file)
 
             if (uploadError) {
                 throw uploadError
@@ -64,44 +64,39 @@ export default function Avatar({
 
             onUpload(filePath)
         } catch (error: any) {
-            // alert('Error uploading avatar!')
-            alert('Error uploading avatar: ' + error.message)
+            // alert('Error uploading banner!')
+            alert('Error uploading banner: ' + error.message)
         } finally {
             setUploading(false)
         }
     }
 
     return (
-        <div className='flex items-center space-x-5 pt-5'>
-            {avatarUrl ? (
-                <Image
-                    width={size}
-                    height={size}
-                    src={
-                        avatarUrl
-                    }
-                    alt="Avatar"
-                    className={`avatar ${className}`}
-                    style={{ height: size, width: size }}
-                />
-            ) : (
-                    <div className={`avatar ${className} w-40 h-40 ring-0 bg-gray-800 dark:bg-gray-200`}>
-                        <UserCircleIcon className="w-full h-full text-gray-300" />
-                    </div>
-            )}
+        <div>
+            {
+                bannerUrl &&  (
+                    <Image
+                        src={bannerUrl}
+                        alt="Banner"
+                        width={size}
+                        height={0}
+                        className={className}
+                    />
+                )
+            }
             {
                 upload && (
-                    <div>
+                    <div className="text-center mt-10">
                         <label
                             className="relative cursor-pointer rounded-md bg-white font-semibold text-orange-600 focus-within:outline-none focus-within:ring-2 focus-within:text-orange-500 p-2 focus-within:ring-offset-2 hover:text-orange-500"
                         >
                             <span>Upload a file</span>
                             <input type="file"
-                            id="avatar"
-                            className="sr-only rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                            accept="image/*"
-                            onChange={uploadAvatar}
-                            disabled={uploading} />
+                                id="banner"
+                                className="sr-only rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                                accept="image/*"
+                                onChange={uploadBanner}
+                                disabled={uploading} />
                         </label>
                     </div>
                 )
@@ -109,3 +104,4 @@ export default function Avatar({
         </div>
     )
 }
+
