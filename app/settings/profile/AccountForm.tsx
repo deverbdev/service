@@ -173,7 +173,7 @@ export default function AccountForm({ session }: { session: Session | null; }) {
                             <Banner
                                 uid={user?.id as string}
                                 url={banner_url}
-                                size={2070}
+                                size={500}
                                 onUpload={(url) => {
                                     setBannerUrl(url);
                                     updateProfile({

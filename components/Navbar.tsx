@@ -8,6 +8,13 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import type { Database } from '@/lib/database.types';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { UserCircleIcon } from '@heroicons/react/24/solid'
+// dropdown menu
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
 
 export default function Navbar({ session }: { session: Session | null; }) {
     const supabase = createClientComponentClient<Database>();
@@ -58,25 +65,46 @@ export default function Navbar({ session }: { session: Session | null; }) {
         if (user) fetchPP();
     }, [fetchPP, user]);
 
+    // signout function that redirects to homepage '/'
+    const signOut = () => {
+        supabase.auth.signOut().then(() => {
+            window.location.href = '/';
+        });
+    };
+
+
     const menu = session ? [
         {
             title: <div>
                 {avatarUrl ? (
-                    <Avatar>
-                        <AvatarImage src={avatarUrl} alt={user?.email} className='rounded-full' />
-                        <AvatarFallback>{user?.email}</AvatarFallback>
-                    </Avatar>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Avatar>
+                                <AvatarImage src={avatarUrl} alt={user?.email} className='rounded-full' />
+                                <AvatarFallback>{user?.email}</AvatarFallback>
+                            </Avatar>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuItem>
+                                <Link href={`/${username}`}>
+                                    <span>Profile</span>
+                                </Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={signOut}>
+                                Sign out
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 ) : (
                     <div className="relative w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
                         <UserCircleIcon className="w-full h-full text-gray-300" />
                     </div>
                 )}
             </div>,
-            path: `/${username}`
+            path: null, // no path for dropdown menu
         },
     ] : [
-        { title: 'Login', path: '/login' },
-        { title: 'Register', path: '/register' },
+        { title: 'Login', path: '/login', classname: '' },
     ];
 
     return (
@@ -95,10 +123,10 @@ export default function Navbar({ session }: { session: Session | null; }) {
                     <div className='hidden md:block'>
                         <div className='flex space-x-4 items-center'>
                             {menu.map((item, index) => (
-                                <Link href={item.path} key={index}>
+                                <Link href={item.path ?? ''} key={index}>
                                     {/* check if child is an image */}
                                     {typeof item.title === 'string' ? (
-                                        <span className='text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 block transition duration-1000 px-3 py-2 rounded-md font-medium border'>
+                                        <span className='text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 block transition duration-1000 px-3 py-2 rounded-md font-medium'>
                                             {item.title}
                                         </span>
                                     ) : (
@@ -118,7 +146,7 @@ export default function Navbar({ session }: { session: Session | null; }) {
                     <ModeToggle />
                     <div className='flex space-x-3'>
                         {menu.map((item, index) => (
-                            <Link href={item.path} key={index}>
+                            <Link href={item.path ?? ''} key={index}>
                                 {/* check if child is an image */}
                                 {typeof item.title === 'string' ? (
                                     <span className='text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 block transition duration-1000 px-3 py-2 rounded-md font-medium border'>
@@ -134,7 +162,6 @@ export default function Navbar({ session }: { session: Session | null; }) {
                     </div>
                 </div>
             </div>
-
         </nav>
     );
 }

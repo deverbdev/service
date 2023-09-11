@@ -5,9 +5,6 @@ import { Session, createClientComponentClient } from '@supabase/auth-helpers-nex
 import Avatar from '@/components/avatar';
 import Banner from '@/components/banner';
 import { Link2 } from 'lucide-react';
-import Image from 'next/image';
-
-
 
 export default function ProfileForm({ session, params }: { session: Session | null; params: { user: string; }; }) {
     const supabase = createClientComponentClient<Database>();
@@ -68,7 +65,7 @@ export default function ProfileForm({ session, params }: { session: Session | nu
                         className='absolute z-0 w-full h-full object-cover' 
                     />
                     {username && (
-                        <span className='md:right-10 md:bottom-24 absolute text-7xl font-semibold text-white'>@{username}</span>
+                        <span className='md:right-10 md:bottom-16 absolute text-9xl font-semibold text-white'>@{username}</span>
                     )}
                 </div>
                 <div>
@@ -76,7 +73,7 @@ export default function ProfileForm({ session, params }: { session: Session | nu
                         <Avatar
                             uid={params.user}
                             url={avatar_url}
-                            size={120}
+                            size={160}
                             onUpload={(url) => {
                                 setAvatarUrl(url);
                             }}
@@ -87,7 +84,7 @@ export default function ProfileForm({ session, params }: { session: Session | nu
             </div>
             
            <div className='flex-col space-y-5'>
-                <div className="max-w-[90rem] mx-auto p-5">
+                <div className="max-w-[87rem] mx-auto p-5">
                     <div className="flex md:justify-between items-center">
 
                         {
@@ -113,7 +110,7 @@ export default function ProfileForm({ session, params }: { session: Session | nu
                     </div>
                 </div>
 
-                <div className="max-w-[90rem] mx-auto px-5">
+                <div className="max-w-[87rem] mx-auto px-5">
                     <div className="flex md:justify-between items-center">
                         <div className='flex space-x-3'>
                             <div className='rounded-lg p-2 space-x-2 flex items-center border hover:bg-gray-100 dark:hover:bg-gray-700 duration-500'>

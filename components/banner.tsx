@@ -72,7 +72,7 @@ export default function Banner({
     }
 
     return (
-        <div>
+        <div className='flex-col items-center'>
             {
                 bannerUrl &&  (
                     <Image
@@ -86,7 +86,7 @@ export default function Banner({
             }
             {
                 upload && (
-                    <div className="text-center mt-10">
+                    <div className="mt-10">
                         <label
                             className="relative cursor-pointer rounded-md bg-white font-semibold text-orange-600 focus-within:outline-none focus-within:ring-2 focus-within:text-orange-500 p-2 focus-within:ring-offset-2 hover:text-orange-500"
                         >

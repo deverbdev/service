@@ -6,7 +6,7 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import HCaptcha from "@hcaptcha/react-hcaptcha"
 import Link from "next/link"
 import { useTheme } from "next-themes"
-import Avatar from "@/components/avatar"
+import Navbar from "@/components/Navbar"
 
 const Register = () => {
     const supabase = createClientComponentClient()
@@ -22,14 +22,6 @@ const Register = () => {
     const [password, setPassword] = useState<string>('')
     const [passwordConfirm, setPasswordConfirm] = useState<string>('')
     
-    // bool to check whether first form has been completed
-    const [firstForm, setFirstForm] = useState<boolean>(false)
-    const [user, setUser] = useState<any>(null)
-
-    const [fullname, setFullname] = useState<string>('')
-    const [username, setUsername] = useState<string>('')
-    const [description, setDescription] = useState<string>('')
-    const [avatarUrl, setAvatarUrl] = useState<string>('')
 
     const [captchaToken, setCaptchaToken] = useState<string>('')
     const { theme } = useTheme()
@@ -54,8 +46,6 @@ const Register = () => {
 
             if (error) throw error
             setMessage(['Check your email for the confirmation link.'])
-            setFirstForm(true)
-            setUser(data.user)
         } catch (error: any) {
             setMessage([error.error_description || error.message, 0])
         } finally {
@@ -69,7 +59,7 @@ const Register = () => {
             <section className="bg-gray-50 dark:bg-gray-900">
                 <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
                     <Link href="/" className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
-                        <Logo />
+                        <Logo force={false}/>
                     </Link>
 
                     {/* message */}
@@ -78,10 +68,7 @@ const Register = () => {
                             {message[0]}
                         </div>
                     )}
-
-                    {/* register form */}
-
-                    {/* boolean to check whether first form has been completed */}
+                    
                     <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
                         <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
                             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
