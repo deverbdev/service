@@ -25,6 +25,7 @@ export default function Avatar({
     const supabase = createClientComponentClient<Database>()
     const [avatarUrl, setAvatarUrl] = useState<Profiles['avatar_url']>(url)
     const [uploading, setUploading] = useState(false)
+    const [error, setError] = useState<string | null>(null)
 
     useEffect(() => {
         async function downloadImage(path: string) {
@@ -36,8 +37,8 @@ export default function Avatar({
 
                 const url = URL.createObjectURL(data)
                 setAvatarUrl(url)
-            } catch (error) {
-                console.log('Error downloading image: ', error)
+            } catch (error: any) {
+                setError("Error downloading image: " + error.message)
             }
         }
 
@@ -64,15 +65,20 @@ export default function Avatar({
 
             onUpload(filePath)
         } catch (error: any) {
-            // alert('Error uploading avatar!')
-            alert('Error uploading avatar: ' + error.message)
+            setError("Error uploading image: " + error.message)
         } finally {
             setUploading(false)
         }
     }
 
     return (
-        <div className='flex items-center space-x-5 pt-5'>
+        <div className={`flex space-x-4 items-center pt-5`}>
+            {/* message */}
+            {error && (
+                <div className="text-red-500 text-sm">
+                    {error}
+                </div>
+            )}
             {avatarUrl ? (
                 <Image
                     width={size}
@@ -91,19 +97,17 @@ export default function Avatar({
             )}
             {
                 upload && (
-                    <div>
-                        <label
-                            className="relative cursor-pointer rounded-md bg-white font-semibold text-orange-600 focus-within:outline-none focus-within:ring-2 focus-within:text-orange-500 p-2 focus-within:ring-offset-2 hover:text-orange-500"
-                        >
-                            <span>Upload a file</span>
-                            <input type="file"
-                            id="avatar"
-                            className="sr-only rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                            accept="image/*"
-                            onChange={uploadAvatar}
-                            disabled={uploading} />
-                        </label>
-                    </div>
+                    <label
+                        className="relative cursor-pointer rounded-md bg-white font-semibold text-orange-600 focus-within:outline-none focus-within:ring-2 focus-within:text-orange-500 p-2 focus-within:ring-offset-2 hover:text-orange-500 mt-2"
+                    >
+                        <span>{uploading ? "loading" : "Upload a File"}</span>
+                        <input type="file"
+                        id="avatar"
+                        className="sr-only rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                        accept="image/*"
+                        onChange={uploadAvatar}
+                        disabled={uploading} />
+                    </label>
                 )
             }
         </div>

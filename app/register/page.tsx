@@ -14,8 +14,8 @@ const Register = () => {
     const EmailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
 
     // message should be an array with string and number ""
-    const [message, setMessage] = useState<any>('')
-    const [subMessage, setSubMessage] = useState<any>('')
+    const [message, setMessage] = useState<[string, boolean]>(['', false])
+    const [subMessage, setSubMessage] = useState < [string, boolean | null]>(['', null])
     const [loading, setLoading] = useState<boolean>(false)
     
     const [email, setEmail] = useState<string>('')
@@ -39,15 +39,15 @@ const Register = () => {
                 email, 
                 password,
                 options: {
-                    emailRedirectTo: 'http://localhost:3000/auth/callback',
+                    emailRedirectTo: `${location.origin}auth/callback`,
                     captchaToken,
                 }
             })
 
             if (error) throw error
-            setMessage(['Check your email for the confirmation link.'])
+            setMessage(['Check your email for the confirmation link.', false])
         } catch (error: any) {
-            setMessage([error.error_description || error.message, 0])
+            setMessage([error.error_description || error.message, true])
         } finally {
             setLoading(false)
         }
@@ -64,7 +64,7 @@ const Register = () => {
 
                     {/* message */}
                     {message && (
-                        <div className={`px-4 py-2 mb-4 text-sm text-white  rounded-md  ${message[1] === 0 ? 'bg-red-500' : 'bg-green-500'}`}>
+                        <div className={`px-4 py-2 mb-4 text-sm text-white  rounded-md  ${message[1] ? 'bg-red-500' : 'bg-green-500'}`}>
                             {message[0]}
                         </div>
                     )}
@@ -99,7 +99,7 @@ const Register = () => {
                                 <div>
                                     {/* sub message */}
                                     {subMessage && (
-                                        <div className={`mb-4 text-sm rounded-md  ${subMessage[1] === 0 ? 'text-red-500' : 'text-green-500'}`}>
+                                        <div className={`mb-4 text-sm rounded-md  ${subMessage[1]  ? 'text-red-500' : 'text-green-500'}`}>
                                             {subMessage[0]}
                                         </div>
                                     )}
@@ -110,11 +110,11 @@ const Register = () => {
                                             (e) => {
 
                                                 if (e.target.value !== password) {
-                                                    setSubMessage(['Passwords do not match', 0])
+                                                    setSubMessage(['Passwords do not match', true])
                                                     setPasswordConfirm('')
                                                 }
                                                 else {
-                                                    setSubMessage(['Passwords match', 1])
+                                                    setSubMessage(['Passwords match', false])
                                                     setPasswordConfirm(e.target.value)
                                                 }
                                             }

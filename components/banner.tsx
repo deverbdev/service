@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react'
 import { Database } from '@/lib/database.types'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import Image from 'next/image'
-import {  PhotoIcon } from '@heroicons/react/24/solid'
 
 type Profiles = Database['public']['Tables']['profiles']['Row']
 
@@ -26,6 +25,8 @@ export default function Banner({
     const [bannerUrl, setBannerUrl] = useState<Profiles['banner_url']>(url)
     const [uploading, setUploading] = useState(false)
 
+    const [error, setError] = useState<string | null>(null)
+
     useEffect(() => {
         async function downloadImage(path: string) {
             try {
@@ -37,7 +38,7 @@ export default function Banner({
                 const url = URL.createObjectURL(data)
                 setBannerUrl(url)
             } catch (error) {
-                console.log('Error downloading image: ', error)
+                setError('Error downloading image' + error)
             }
         }
 
@@ -65,7 +66,7 @@ export default function Banner({
             onUpload(filePath)
         } catch (error: any) {
             // alert('Error uploading banner!')
-            alert('Error uploading banner: ' + error.message)
+            setError('Error uploading banner: ' + error.message)
         } finally {
             setUploading(false)
         }
@@ -73,6 +74,11 @@ export default function Banner({
 
     return (
         <div className='flex-col items-center'>
+            {error && (
+                <div className="text-red-500 text-sm">
+                    {error}
+                </div>
+            )}
             {
                 bannerUrl &&  (
                     <Image
@@ -90,7 +96,7 @@ export default function Banner({
                         <label
                             className="relative cursor-pointer rounded-md bg-white font-semibold text-orange-600 focus-within:outline-none focus-within:ring-2 focus-within:text-orange-500 p-2 focus-within:ring-offset-2 hover:text-orange-500"
                         >
-                            <span>Upload a file</span>
+                            <span>{uploading ? "loading" : "Upload a File"}</span>
                             <input type="file"
                                 id="banner"
                                 className="sr-only rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"

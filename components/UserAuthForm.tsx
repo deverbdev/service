@@ -14,8 +14,8 @@ const UserAuthForm = () => {
     const EmailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
 
     // message should be an array with string and number ""
-    const [message, setMessage] = useState<any>('')
-    const [subMessage, setSubMessage] = useState<any>('')
+    const [message, setMessage] = useState<[string, boolean]>(['', false])
+    const [subMessage, setSubMessage] = useState<[string, boolean]>(['', false])
     const [loading, setLoading] = useState<boolean>(false)
 
     const [email, setEmail] = useState<string>('')
@@ -45,9 +45,9 @@ const UserAuthForm = () => {
             })
 
             if (error) throw error
-            setMessage(['Check your email for the confirmation link.'])
+            setMessage(['Check your email for the confirmation link.', false])
         } catch (error: any) {
-            setMessage([error.error_description || error.message, 0])
+            setMessage([error.error_description || error.message, true])
         } finally {
             setLoading(false)
         }
@@ -58,10 +58,9 @@ const UserAuthForm = () => {
         <>
             <section>
                 <div className="flex flex-col items-center justify-center mx-auto lg:py-0">
-
-                    {/* message */}
+                    
                     {message && (
-                        <div className={`px-4 py-2 mb-4 text-sm text-white  rounded-md  ${message[1] === 0 ? 'bg-red-500' : 'bg-green-500'}`}>
+                        <div className={`px-4 py-2 mb-4 text-sm text-white  rounded-md  ${message[1] ? 'bg-red-500' : 'bg-green-500'}`}>
                             {message[0]}
                         </div>
                     )}
@@ -92,7 +91,7 @@ const UserAuthForm = () => {
                             <div>
                                 {/* sub message */}
                                 {subMessage && (
-                                    <div className={`mb-4 text-sm rounded-md  ${subMessage[1] === 0 ? 'text-red-500' : 'text-green-500'}`}>
+                                    <div className={`mb-4 text-sm rounded-md  ${subMessage[1] ? 'text-red-500' : 'text-green-500'}`}>
                                         {subMessage[0]}
                                     </div>
                                 )}
@@ -103,11 +102,11 @@ const UserAuthForm = () => {
                                         (e) => {
 
                                             if (e.target.value !== password) {
-                                                setSubMessage(['Passwords do not match', 0])
+                                                setSubMessage(['Passwords do not match', true])
                                                 setPasswordConfirm('')
                                             }
                                             else {
-                                                setSubMessage(['Passwords match', 1])
+                                                setSubMessage(['Passwords match', false])
                                                 setPasswordConfirm(e.target.value)
                                             }
                                         }
@@ -128,7 +127,7 @@ const UserAuthForm = () => {
 
                             <button type="submit" className={`w-full text-white bg-orange-400 hover:bg-orange-600 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800 transition duration-300 ease-in-out ${!email || !password || !passwordConfirm || !captchaToken ? 'opacity-50 cursor-not-allowed' : ''}`}>{loading ? "Loading..." : "Create an account"}</button>
 
-                            <p className="text-sm font-light text-gray-500 dark:text-gray-400">
+                            <p className="text-sm font-light text-gray-500 dark:text-gray-400 text-center">
                                 Already have an account? <Link href="/login"
                                     className="font-medium text-orange-600 hover:underline dark:text-orange-500">Login here</Link>
                             </p>

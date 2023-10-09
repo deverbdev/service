@@ -1,5 +1,5 @@
 {
-  "name": "prodfy",
+  "name": "deverb",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -31,7 +31,7 @@
     "lucide-react": "^0.255.0",
     "next": "^13.4.7",
     "next-themes": "^0.2.1",
-    "postcss": "8.4.24",
+    "postcss": "^8.4.31",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "tailwind-merge": "^1.13.2",

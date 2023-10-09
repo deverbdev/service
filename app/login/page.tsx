@@ -13,12 +13,13 @@ const Login = () => {
     const supabase = createClientComponentClient()
     const EmailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
     
-    const [message, setMessage] = useState<any>('')
+    const [message, setMessage] = useState<[string, boolean]>(['', false])
     const [loading, setLoading] = useState<boolean>(false)
 
     const [email, setEmail] = useState<string>('')
     const [password, setPassword] = useState<string>('')
     const [captchaToken, setCaptchaToken] = useState<string>('')
+
     const { theme } = useTheme()
     const router = useRouter()
 
@@ -40,10 +41,10 @@ const Login = () => {
 
 
             if (error) throw error
-            router.push(`/`)
+            router.push(`/home`)
             
         } catch (error: any) {
-            setMessage([error.error_description || error.message, 0])
+            setMessage([error.error_description || error.message, true])
         } finally {
             setLoading(false)
         }
@@ -59,7 +60,7 @@ const Login = () => {
 
                     {/* message */}
                     {message && (
-                        <div className={`px-4 py-2 mb-4 text-sm text-white  rounded-md  ${message[1] === 0 ? 'bg-red-500' : 'bg-green-500'}`}>
+                        <div className={`px-4 py-2 mb-4 text-sm text-white  rounded-md  ${message[1] ? 'bg-red-500' : 'bg-green-500'}`}>
                             {message[0]}
                         </div>
                     )}

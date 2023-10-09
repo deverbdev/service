@@ -15,6 +15,7 @@ export default function AccountForm({ session }: { session: Session | null; }) {
     const [website, setWebsite] = useState<string | null>(null);
     const [avatar_url, setAvatarUrl] = useState<string | null>(null);
     const [banner_url, setBannerUrl] = useState<string | null>(null);
+    const [error, setError] = useState(null);
     const user = session?.user;
 
     const getProfile = useCallback(async () => {
@@ -24,7 +25,7 @@ export default function AccountForm({ session }: { session: Session | null; }) {
             let { data, error, status } = await supabase
                 .from('profiles')
                 .select(`full_name, username, description, website, avatar_url, banner_url`)
-                .eq('id', user?.id)
+                .eq('id', user?.id as string)
                 .single();
 
             if (error && status !== 406) {
@@ -39,8 +40,8 @@ export default function AccountForm({ session }: { session: Session | null; }) {
                 setAvatarUrl(data.avatar_url);
                 setBannerUrl(data.banner_url);
             }
-        } catch (error) {
-            alert('Error loading user data!');
+        } catch (error: any) {
+            setError(error.message);
         } finally {
             setLoading(false);
         }
@@ -63,21 +64,25 @@ export default function AccountForm({ session }: { session: Session | null; }) {
         try {
             setLoading(true);
 
-            let { error } = await supabase.from('profiles').upsert({
-                id: user?.id as string,
-                full_name: fullname,
-                username,
-                description,
-                website,
-                avatar_url,
-                banner_url,
-                updated_at: new Date().toISOString(),
-            });
+            let { error } = await supabase.from('profiles')
+                .upsert(
+                    {
+                        id: user?.id as string,
+                        username,
+                        full_name: fullname,
+                        website,
+                        avatar_url,
+                        banner_url,
+                        description
+                    }
+                )
             if (error) throw error;
-            alert('Profile updated!');
+            setError(null);
+
+            // reload page
+            window.location.reload();
         } catch (error: any) {
-            alert('Error updating the data!' + error.message);
-            // alert(error.message)
+            setError(error.message);
         } finally {
             setLoading(false);
         }
@@ -89,6 +94,12 @@ export default function AccountForm({ session }: { session: Session | null; }) {
             {!user && (
                 <div className='text-center'>
                     <h1 className='text-2xl font-semibold'>You must be signed in to edit your profile</h1>
+                </div>
+            )}
+
+            {error && (
+                <div className="text-red-500 text-sm text-center">
+                    {error}
                 </div>
             )}
             <div className="flex-col items-center justify-center mx-auto max-w-4xl">
@@ -116,6 +127,7 @@ export default function AccountForm({ session }: { session: Session | null; }) {
                                         placeholder="username"
                                         value={username || ''}
                                         onChange={(e) => setUsername(e.target.value)}
+                                        
                                     />
                                 </div>
                             </div>

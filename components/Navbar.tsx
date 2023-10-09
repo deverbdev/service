@@ -28,7 +28,7 @@ export default function Navbar({ session }: { session: Session | null; }) {
             let { data, error, status } = await supabase
                 .from('profiles')
                 .select(`avatar_url, username`)
-                .eq('id', user?.id)
+                .eq('id', user?.id as string)
                 .single();
 
             console.log(data);
@@ -63,7 +63,7 @@ export default function Navbar({ session }: { session: Session | null; }) {
 
     useEffect(() => {
         if (user) fetchPP();
-    }, [fetchPP, user]);
+    }, [fetchPP, user, username]);
 
     // signout function that redirects to homepage '/'
     const signOut = () => {
@@ -76,30 +76,30 @@ export default function Navbar({ session }: { session: Session | null; }) {
     const menu = session ? [
         {
             title: <div>
-                {avatarUrl ? (
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Avatar>
-                                <AvatarImage src={avatarUrl} alt={user?.email} className='rounded-full' />
-                                <AvatarFallback>{user?.email}</AvatarFallback>
-                            </Avatar>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            <DropdownMenuItem>
-                                <Link href={`/${username}`}>
-                                    <span>Profile</span>
-                                </Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={signOut}>
-                                Sign out
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                ) : (
-                    <div className="relative w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
-                        <UserCircleIcon className="w-full h-full text-gray-300" />
-                    </div>
-                )}
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Avatar>
+                            {avatarUrl ? (
+                                <AvatarImage src={avatarUrl} className='rounded-full' />
+                            ) : (
+                                <AvatarFallback>
+                                    <UserCircleIcon className="w-8 h-8 text-gray-400" />
+                                </AvatarFallback>
+                            )}
+                        </Avatar>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                        <DropdownMenuItem>
+                            {/* disable if username is null */}
+                            <Link href={`/${username}`} className={`${!username ? 'pointer-events-none opacity-20' : ''}`}>
+                                <span>Profile</span>
+                            </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={signOut}>
+                            Sign out
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
             </div>,
             path: null, // no path for dropdown menu
         },
@@ -112,7 +112,7 @@ export default function Navbar({ session }: { session: Session | null; }) {
             <div className="mx-auto p-5">
                 <div className="flex md:justify-between justify-center">
                     <div className='flex items-center space-x-4'>
-                        <Link href='/'>
+                        <Link href='/' className={`${!username ? 'pointer-events-none opacity-20 duration-100' : ''}`}>
                             <Logo />
                         </Link>
                     </div>

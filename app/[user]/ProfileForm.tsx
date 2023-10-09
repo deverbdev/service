@@ -65,11 +65,11 @@ export default function ProfileForm({ session, params }: { session: Session | nu
                         className='absolute z-0 w-full h-full object-cover' 
                     />
                     {username && (
-                        <span className='md:right-10 md:bottom-16 absolute text-9xl font-semibold text-white'>@{username}</span>
+                        <span className='md:right-10 md:bottom-20 absolute text-9xl font-semibold text-white'>@{username}</span>
                     )}
                 </div>
                 <div>
-                    <div className='px-64 my-10 item-center'>
+                    <div className='md:px-64 my-10 item-center'>
                         <Avatar
                             uid={params.user}
                             url={avatar_url}

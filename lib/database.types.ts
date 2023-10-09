@@ -13,7 +13,6 @@ export interface Database {
         Row: {
           avatar_url: string | null
           banner_url: string | null
-          created_at: string | null
           description: string | null
           full_name: string | null
           id: string
@@ -24,7 +23,6 @@ export interface Database {
         Insert: {
           avatar_url?: string | null
           banner_url?: string | null
-          created_at?: string | null
           description?: string | null
           full_name?: string | null
           id: string
@@ -35,7 +33,6 @@ export interface Database {
         Update: {
           avatar_url?: string | null
           banner_url?: string | null
-          created_at?: string | null
           description?: string | null
           full_name?: string | null
           id?: string
@@ -43,7 +40,14 @@ export interface Database {
           username?: string | null
           website?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_id_fkey"
+            columns: ["id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       subscriptions: {
         Row: {
